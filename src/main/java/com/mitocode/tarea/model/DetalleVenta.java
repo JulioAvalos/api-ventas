@@ -1,12 +1,14 @@
 package com.mitocode.tarea.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @EqualsAndHashCode(exclude = "producto")
 public class DetalleVenta {

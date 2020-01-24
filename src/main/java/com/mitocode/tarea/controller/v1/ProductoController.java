@@ -1,4 +1,4 @@
-package com.mitocode.tarea.controller;
+package com.mitocode.tarea.controller.v1;
 
 import com.mitocode.tarea.model.Producto;
 import com.mitocode.tarea.service.ProductoService;
@@ -9,10 +9,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
-@RequestMapping("/productos")
+@RequestMapping(ProductoController.BASE_URL)
 public class ProductoController {
+
+    public static final String BASE_URL = "/api/v1/productos";
     
     private final ProductoService service;
 
@@ -48,9 +51,9 @@ public class ProductoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> eliminar(@PathVariable Long id){
         Producto obj = service.leerPorId(id);
-        if(obj.getIdProducto() != null){
+        if(Objects.nonNull(obj) && obj.getIdProducto() != null){
             service.eliminar(id);
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

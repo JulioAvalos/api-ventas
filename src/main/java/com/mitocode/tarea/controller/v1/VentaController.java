@@ -1,4 +1,4 @@
-package com.mitocode.tarea.controller;
+package com.mitocode.tarea.controller.v1;
 
 import com.mitocode.tarea.model.Venta;
 import com.mitocode.tarea.service.VentaService;
@@ -12,8 +12,10 @@ import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/ventas")
+@RequestMapping(VentaController.BASE_URL)
 public class VentaController {
+
+    public static final String BASE_URL = "/api/v1/ventas";
 
     private final VentaService service;
 
