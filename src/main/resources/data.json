@@ -1,0 +1,21 @@
+{
+  "persona": {
+    "idPersona": 1
+  },
+  "fecha" : "2018-06-19T05:00:00.000Z",
+  "importe": 30.66,
+  "detalleVenta": [
+    {
+      "producto": {
+        "idProducto": 1
+      },
+      "cantidad": 10
+    },
+    {
+      "producto": {
+        "idProducto": 2
+      },
+      "cantidad": 3
+    }
+  ]
+}
