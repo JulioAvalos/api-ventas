@@ -1,0 +1,49 @@
+version: '3.5'
+
+# docker compose para cagar el monolito
+services: 
+
+    mysql_server:
+        build: 
+            context: ./basedatos
+            dockerfile: Dockerfile
+        container_name: mysql_server
+        ports: 
+            - 3300:3306
+        restart: on-failure
+        networks: 
+            - backend
+
+    api-ventas: 
+        build: 
+            context: ./api-ventas
+            dockerfile: Dockerfile
+        container_name: api-ventas
+        depends_on: 
+            - mysql_server
+        ports: 
+            - 8000:8081
+        restart: on-failure
+        entrypoint: dockerize -wait tcp://mysql_server:3300 -timeout 10m 
+
+
+    jenkins:
+        image: jenkinsci/blueocean:1.19.0
+        # For windows
+        # environment:
+        #   - DOCKER_HOST=tcp://host.docker.internal:2375
+        user: root
+        ports:
+            - "8080:8080"
+            - "8443:8443"
+            - "50000:50000"
+        # depends_on: 
+        #   - sonarqube
+        volumes:
+            - jenkins-data:/var/jenkins_home
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /home/william/.m2:/home/.m2
+            - ./aplicativo/angular/node_modules:/home/node_modules
+
+volumes:
+    jenkins-data:
