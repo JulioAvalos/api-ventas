@@ -14,7 +14,7 @@ pipeline {
         NETWORK_AUX = "aplicativo-mvp_default"
         
         CONTAINER_NAME = "monolito"
-        HOST_APP = "http://${CONTAINER_NAME}:8090"
+        HOST_APP = "http://${CONTAINER_NAME}:8080"
         APP_HEALTHCHECK = "${HOST_APP}/v2/api-docs"
 
         ARTIFACTORY_USR = "bot-devops-pe"
@@ -27,7 +27,7 @@ pipeline {
             steps{
                 script {
 
-                    def pom = readMavenPom file:'aplicativo/monolito/pom.xml'
+                    def pom = readMavenPom file:'api-ventas/pom.xml'
                     env.POM_VERSION = pom.version
 
                     def values = "${JOB_NAME}".split('/')
@@ -49,7 +49,7 @@ pipeline {
             steps{
                 script {
                     docker.image('maven:3.6-jdk-8-alpine').inside('-v "/home/.m2:/home/.m2"') {
-                        sh "mvn -Dmaven.repo.local=/home/.m2/repository -f ${env.WORKSPACE}/aplicativo/monolito/pom.xml --batch-mode clean package -Dmaven.test.skip=true"
+                        sh "mvn -Dmaven.repo.local=/home/.m2/repository -f ${env.WORKSPACE}/api-ventas/pom.xml --batch-mode clean package -Dmaven.test.skip=true"
                     }
                 }
             }
@@ -59,7 +59,7 @@ pipeline {
             steps{
                 script {
                     docker.image('maven:3.6-jdk-8-alpine').inside('-v "/home/.m2:/home/.m2"') {
-                        sh "mvn -Dmaven.repo.local=/home/.m2/repository -f ${env.WORKSPACE}/aplicativo/monolito/pom.xml --batch-mode test"
+                        sh "mvn -Dmaven.repo.local=/home/.m2/repository -f ${env.WORKSPACE}/api-ventas/pom.xml --batch-mode test"
                     }
                 }
             }
@@ -69,7 +69,7 @@ pipeline {
             steps{
                 script {
                     docker.image('maven:3.6-jdk-8-alpine').inside('-v "/home/.m2:/home/.m2"') {
-                        sh "mvn -Dmaven.repo.local=/home/.m2/repository -f ${env.WORKSPACE}/aplicativo/monolito/pom.xml --batch-mode sonar:sonar -Dsonar.host.url=${SONAR_HOST}"
+                        sh "mvn -Dmaven.repo.local=/home/.m2/repository -f ${env.WORKSPACE}/api-ventas/pom.xml --batch-mode sonar:sonar -Dsonar.host.url=${SONAR_HOST}"
                     }
                 }
             }

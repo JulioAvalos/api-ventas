@@ -11,6 +11,8 @@ services:
         ports: 
             - 3300:3306
         restart: on-failure
+        volumes:
+            - data-mysql:/var/lib/postgresql/data
         networks: 
             - backend
 
@@ -18,7 +20,7 @@ services:
         build: 
             context: ./api-ventas
             dockerfile: Dockerfile
-        container_name: api-ventas
+        container_name: monolito
         depends_on: 
             - mysql_server
         ports: 
@@ -26,6 +28,26 @@ services:
         restart: on-failure
         entrypoint: dockerize -wait tcp://mysql_server:3300 -timeout 10m 
 
+    artifactory:
+        image: docker.bintray.io/jfrog/artifactory-pro:6.13.1
+        ports:
+            - 8081:8081
+        depends_on:
+            - postgresql
+        volumes:
+            - data-artifactory:/var/opt/jfrog/artifactory
+        environment:
+            - DB_TYPE=postgresql
+            - DB_USER=generic
+            - DB_PASSWORD=generic
+            # Add extra Java options by uncommenting the following line
+            #- EXTRA_JAVA_OPTIONS=-Xms512m -Xmx4g
+        restart: always
+        ulimits:
+            nproc: 65535
+            nofile:
+            soft: 32000
+            hard: 40000
 
     jenkins:
         image: jenkinsci/blueocean:1.19.0
@@ -42,8 +64,10 @@ services:
         volumes:
             - jenkins-data:/var/jenkins_home
             - /var/run/docker.sock:/var/run/docker.sock
-            - /home/william/.m2:/home/.m2
-            - ./aplicativo/angular/node_modules:/home/node_modules
+
+
 
 volumes:
+    data-mysql:
+    data-artifactory:
     jenkins-data:
